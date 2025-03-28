@@ -1,5 +1,7 @@
 
-#%%
+#%% 과거 성과를 분석해보는 과정이다. 
+# 구현은 ggr  보다 더 간단한다. monthly rebalancing 하는 과정. 
+# 매월 퍼센트만 정하면, 시뮬레이션하는게 쉽다. 
 import pandas as pd 
 import numpy as np 
 import datetime
@@ -20,7 +22,7 @@ num_tests = 2
 _price = sp500_prices.vbt.tile(num_tests, keys=pd.Index(["No_Delay", "1D_Delay"], name='group'))
 _orders = pd.concat([orders, orders_delay], axis=1)
 
-#%%
+# #%%
 pf = vbt.Portfolio.from_orders(
     close=_price,   #.loc[order.index, order.columns], 
     size=_orders,
@@ -66,3 +68,4 @@ stats.loc["mean"] *= 252
 stats.loc["std"] *= np.sqrt(252)
 stats.loc["mean/std"] = stats.loc["mean"]/stats.loc["std"]
 print(stats)
+# %%

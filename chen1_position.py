@@ -23,14 +23,16 @@ while True:
     ds.append(d)
 
 short_list = pd.DataFrame(columns=np.arange(1,51))
-long_list = pd.DataFrame(columns=np.arange(1,51))
+long_list = pd.DataFrame(columns=np.arange(1,51)) #종목 50개 append
+
 for d in ds:
     print(d.strftime("%Y-%m-%d"))
     #d 시점에 s&p500 종목 목록
     d_list = sp500_list[(sp500_list['start']<=d) & (sp500_list['ending']>=d)]['permno']
     permno_list = d_list.astype(str).to_list()
     data = sp500[permno_list].loc[d-relativedelta(years=5):d-relativedelta(days=1)]
-    ret = data.resample("ME").agg(lambda x: (1+x).prod()-1)
+    ret = data.resample("ME").agg(lambda x: (1+x).prod()-1) # 월간으로 구한다. 매일 매일 수익률을 누적해야한다. 
+
     corr = ret.corr()
     diff_series = pd.Series(index=corr.columns, dtype=float)
     for i in range(len(corr.columns)):
@@ -38,7 +40,7 @@ for d in ds:
         Cret = ret[high_corr_list].mean(1)
         Lret = ret.iloc[:,i]
         var = pd.concat([Cret, Lret], axis=1).dropna()        
-        beta = var.cov().iloc[0,1] / var.cov().iloc[1,1]
+        beta = var.cov().iloc[0,1] / var.cov().iloc[1,1] #베타 계수를 구한다. covariance/X의 var
         diff = beta*Cret.iloc[-1] - Lret.iloc[-1]
         diff_series.iloc[i] = diff
     
@@ -52,3 +54,5 @@ for d in ds:
 
 short_list.to_csv("./data/short_list.csv")
 long_list.to_csv("./data/long_list.csv")
+
+# %%

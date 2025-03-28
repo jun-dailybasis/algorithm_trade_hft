@@ -1,4 +1,5 @@
-#%%
+#%% 포지션을 생성하는 코드
+# pair 만드는 코드와 비슷(ssd_pair)
 import pandas as pd 
 import numpy as np 
 import datetime
@@ -18,13 +19,13 @@ comnam_map = stock_id[["namedt", "permno", "comnam"]].drop_duplicates().groupby(
 
 
 # %%
-n = 30  #pair 개수
+n = 30  #pair 개수 어떤 시점에 ssd가 작은.30개 후보 
 
-ds = [datetime.datetime(1965, 3, 1)]
+ds = [datetime.datetime(1965, 3, 1)] # 날짜는 이날.
 i = 0
 while True:
     i += 1
-    d = ds[0] + relativedelta(months=i*6)
+    d = ds[0] + relativedelta(months=i*6) # 주기 6개월 
     if d>datetime.datetime(2024, 6, 1):
         break
     ds.append(d)
@@ -91,11 +92,12 @@ for d in ds:
         position.iloc[-1] = [0.0, 0.0]  #최종 시점에서는 포지션 0으로 종료
 
         #당일 매매 주문 데이터 생성
+ 
         entry = (position[no1]!=0.0) & ((position[no1].shift(1)==0.0) | (position[no1].shift(1).isnull()))
         exit = (position[no1]==0.0) & (position[no1].shift(1)!=0.0) & (position[no1].shift(1).notnull())
         order = position.diff()
         order.iloc[0] = position.iloc[0]
-        order[entry] = order[entry] / test_prices12[entry]
+        order[entry] = order[entry] / test_prices12[entry]   # 수량을 넣는 방법으로. 
         order[exit] = (-1) * order[entry].values
         orders.loc[order.index, position.columns] += order
 
@@ -117,7 +119,7 @@ for d in ds:
 
 
 
-#%%
+#%% 저장. 
 orders = orders.astype(pd.SparseDtype("float", fill_value=0))
 orders_delay = orders_delay.astype(pd.SparseDtype("float", fill_value=0))
 orders.to_pickle("./data/orders_top30.pkl")
@@ -125,3 +127,5 @@ orders_delay.to_pickle("./data/orders_delay_top30.pkl")
 
 
 
+
+# %%
