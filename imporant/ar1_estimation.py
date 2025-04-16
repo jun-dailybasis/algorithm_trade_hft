@@ -1,4 +1,4 @@
-#%%
+#%% 4월 7일 
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -6,7 +6,8 @@ from ar1_process import ar1_process, random_walk
 import statsmodels.api as sm
 import seaborn as sns
 
-# AR(1) 프로세스 생성
+# bias가 커질 수 있다는걸 인지하고있어라
+# AR(1) 프로세스 생성 
 phi0 = 0.5
 phi1 = 0.5
 sigma = 1
@@ -29,7 +30,7 @@ for i in range(N):
     model = sm.OLS(Y, X)
     results = model.fit()
 
-    # 파라미터 추정값
+    # 파라미터 추정값(3개의 파라미터))
     phi0_est = results.params[0]  # 상수항
     phi1_est = results.params[1]  # AR(1) 계수
     sigma_est = np.sqrt(results.mse_resid)  # 잔차의 표준편차
@@ -53,3 +54,5 @@ axes[2].axvline(x=sigma_ests.mean(), color='r', linestyle='--', alpha=0.5)
 fig.tight_layout()
 plt.show()
 
+
+# %%

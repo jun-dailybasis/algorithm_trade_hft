@@ -6,9 +6,10 @@ import vectorbt as vbt
 from ar1_process import ar1_process, random_walk
 from tqdm import tqdm
 
+# 3개의 시계열 데이터 
 prices1 = ar1_process(phi0=0, phi1=0.3, sigma=1, T=2500)
-prices2 = ar1_process(phi0=0, phi1=0.95, sigma=1, T=2500)
-prices3 = random_walk(sigma=1, T=2500)
+prices2 = ar1_process(phi0=0, phi1=0.95, sigma=1, T=2500) #느리게 mean reversion 한다. 
+prices3 = random_walk(sigma=1, T=2500) # pyi1 = 1이다라고 생각해. 
 
 prices1 = prices1 - prices1.min() + 1
 prices2 = prices2 - prices2.min() + 1
